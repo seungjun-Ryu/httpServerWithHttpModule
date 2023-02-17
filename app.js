@@ -1,7 +1,7 @@
-const http = require('http'); // (1)
+const http = require('http'); 
 const server = http.createServer();
 
-const users = [ // (2)
+const users = [ 
   {
     id: 1,
     name: "Rebekah Johnson",
@@ -38,14 +38,14 @@ const httpRequestListener = function (request, response) {
 			response.writeHead(200, {'Content-Type' : 'application/json'});
 			response.end(JSON.stringify({message : 'pong'}));
 		}
-	} else if (method === 'POST') { // (3)
+	} else if (method === 'POST') { 
 		if (url === '/users') {
-			let body = ''; // (4)
-			request.on('data', (data) => {body += data;}) // (5)
+			let body = ''; 
+			request.on('data', (data) => {body += data;}) 
 			
 			// stream을 전부 받아온 이후에 실행
-			request.on('end', () => {  // (6)
-				const user = JSON.parse(body); //(7) 
+			request.on('end', () => {  
+				const user = JSON.parse(body); 
 
 				users.push({ // (8)
 					id : user.id,
@@ -54,10 +54,28 @@ const httpRequestListener = function (request, response) {
 					password : user.password
 				})
 
-				response.end(JSON.stringify({message : 'userCreated'})); // (9)
-			})
-    }
-  }
+				response.end(JSON.stringify({message : 'userCreated'})); 
+			})}
+        if (url === '/posts') {
+            let body = '';
+            request.on('data', (data) => {body += data;})
+
+            request.on('end', () => {
+                const user = JSON.parse(body);
+
+                posts.push({
+                    id : user.id,
+                    title : user.title,
+                    description : user.description,
+                    userId : user.userId
+                })
+
+                response.end(JSON.stringify({message : 'postCreated'}));
+            })
+        }
+        }
+
+    
 };
 
 server.on("request", httpRequestListener);
